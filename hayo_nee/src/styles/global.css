@@ -1,0 +1,250 @@
+/*
+  global.css
+  サイト全体に適用されるグローバルスタイルを定義します。
+  Tailwindのベーススタイルを読み込み、カスタムCSS変数や
+  全体的なスタイルルールを追加しています。
+*/
+
+/* Tailwindの基本スタイルを読み込みます */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* -----------------------------------------------
+   Google Fonts の読み込み
+   細め・柔らかい印象のサンセリフ体を使用します
+   ----------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500&display=swap');
+
+/* -----------------------------------------------
+   CSS カスタム変数（デザイントークン）
+   サイト全体で共通して使用する色・サイズを変数化します
+   ----------------------------------------------- */
+:root {
+  /* ページ背景色：薄いベージュ */
+  --color-bg:        #faf8f5;
+  /* カードや要素の背景色 */
+  --color-surface:   #f3efe8;
+  /* ボーダーカラー */
+  --color-border:    #e8e0d4;
+  /* メインテキストカラー（真っ黒を避ける） */
+  --color-text:      #3d3a36;
+  /* 補助テキストカラー */
+  --color-muted:     #8a8278;
+  /* メインアクセントカラー（くすんだブルー） */
+  --color-accent:    #6090b0;
+  /* アクセントの薄い版 */
+  --color-accent-light: #dce8f0;
+}
+
+/* -----------------------------------------------
+   ベーススタイル
+   ----------------------------------------------- */
+@layer base {
+  /* ページ全体の基本スタイル */
+  html {
+    /* スムーズスクロールを有効化 */
+    scroll-behavior: smooth;
+    /* フォントのアンチエイリアス */
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body {
+    /* 背景色：薄いベージュ */
+    background-color: var(--color-bg);
+    /* テキストカラー：落ち着いたダークグレー */
+    color: var(--color-text);
+    /* フォント：Noto Sans JP（細め） */
+    font-family: 'Noto Sans JP', sans-serif;
+    /* フォントウェイト：細め（300） */
+    font-weight: 300;
+    /* 行間：日本語テキストの読みやすい行間 */
+    line-height: 1.8;
+  }
+
+  /* 見出しスタイル */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Zen Kaku Gothic New', sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+
+  /* リンクのデフォルトスタイル */
+  a {
+    color: var(--color-accent);
+    transition: color 0.2s ease, opacity 0.2s ease;
+  }
+  a:hover {
+    opacity: 0.75;
+  }
+
+  /* 水平線のスタイル */
+  hr {
+    border-color: var(--color-border);
+  }
+
+  /* Markdownコンテンツのスタイル（小説・キャラクター説明文など） */
+  .prose-custom {
+    color: var(--color-text);
+    font-weight: 300;
+    line-height: 2.0;
+  }
+  .prose-custom p {
+    margin-bottom: 1.5em;
+  }
+  .prose-custom h2 {
+    font-size: 1.25rem;
+    font-weight: 400;
+    margin-top: 2em;
+    margin-bottom: 0.75em;
+    padding-bottom: 0.25em;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .prose-custom h3 {
+    font-size: 1.1rem;
+    font-weight: 400;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+  }
+}
+
+/* -----------------------------------------------
+   コンポーネント共通スタイル
+   ----------------------------------------------- */
+@layer components {
+  /* カードコンポーネント */
+  .card {
+    background-color: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 18px;
+    padding: 1.5rem;
+    transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+                box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(61, 58, 54, 0.08);
+  }
+
+  /* バッジコンポーネント（タグ・ラベル） */
+  .badge {
+    display: inline-block;
+    padding: 0.2em 0.75em;
+    background-color: var(--color-accent-light);
+    color: var(--color-accent);
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+  }
+
+  /* ボタンコンポーネント */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 1.5em;
+    background-color: var(--color-accent);
+    color: #faf8f5;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    text-decoration: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover {
+    opacity: 0.85;
+    transform: translateY(-2px);
+    color: #faf8f5;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.6em 1.5em;
+    border: 1px solid var(--color-border);
+    color: var(--color-text);
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 300;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.2s;
+  }
+  .btn-ghost:hover {
+    background-color: var(--color-surface);
+    transform: translateY(-2px);
+    color: var(--color-text);
+  }
+
+  /* セクション共通のパディング */
+  .section {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  /* コンテナ：中央寄せ・最大幅制限 */
+  .container-main {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* -----------------------------------------------
+   アニメーション遅延ユーティリティ
+   Alpine.jsと組み合わせて使います
+   ----------------------------------------------- */
+@layer utilities {
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+}
+
+/* -----------------------------------------------
+   横スクロールコンテナのスタイル
+   キャラクター一覧の横スクロールで使用します
+   ----------------------------------------------- */
+.scroll-x-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  /* スクロールバーを非表示にする（見た目をすっきりさせるため） */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+.scroll-x-container::-webkit-scrollbar {
+  height: 4px;
+}
+.scroll-x-container::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border-radius: 2px;
+}
+
+/* -----------------------------------------------
+   ドロワーナビゲーションのスタイル
+   ----------------------------------------------- */
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(61, 58, 54, 0.3);
+  backdrop-filter: blur(2px);
+  z-index: 40;
+}
+.drawer-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: min(320px, 85vw);
+  background-color: var(--color-bg);
+  box-shadow: -8px 0 32px rgba(61, 58, 54, 0.12);
+  z-index: 50;
+  padding: 2rem 1.5rem;
+}

@@ -1,0 +1,186 @@
+---
+// src/pages/characters/[slug].astro
+// キャラクター個別詳細ページです。
+// [slug] の部分がURLになります（例: /characters/yuki-sakura）
+// Astroの動的ルーティングを使って、Markdownファイルから自動生成されます。
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// -----------------------------------------------
+// getStaticPaths: ビルド時にページを生成するためのパスを定義します
+// すべてのキャラクターMarkdownファイルに対してページを生成します
+// -----------------------------------------------
+export async function getStaticPaths() {
+  const characters = await getCollection('characters');
+  return characters.map(chara => ({
+    params: { slug: chara.slug },
+    props: { chara },
+  }));
+}
+
+// propsとしてキャラクターデータを受け取ります
+const { chara } = Astro.props;
+
+// Markdownの本文をHTMLに変換します
+const { Content } = await chara.render();
+
+// 登場作品の小説データを取得します（作品名で検索）
+const allNovels = await getCollection('novels');
+const relatedNovels = allNovels.filter(novel =>
+  chara.data.works?.includes(novel.data.title) ||
+  chara.data.works?.includes(novel.data.series || '')
+);
+// 重複を除く（同シリーズの複数chapを1つにまとめる）
+const uniqueSeries = [...new Map(
+  relatedNovels.map(n => [n.data.series || n.data.title, n])
+).values()];
+---
+
+<BaseLayout
+  title={chara.data.name}
+  description={`${chara.data.name}のキャラクタープロフィールページです。`}
+>
+
+  <div class="container-main section">
+
+    <!-- パンくずリスト -->
+    <nav class="text-xs text-[#8a8278] font-light mb-10 animate-fade-up" aria-label="パンくずリスト">
+      <a href="/" class="hover:text-[#6090b0] transition-colors">トップ</a>
+      <span class="mx-2">›</span>
+      <a href="/characters" class="hover:text-[#6090b0] transition-colors">キャラクター</a>
+      <span class="mx-2">›</span>
+      <span class="text-[#3d3a36]">{chara.data.name}</span>
+    </nav>
+
+    <div class="grid md:grid-cols-[280px_1fr] gap-10 md:gap-16">
+
+      <!-- ===============================
+           左カラム：プロフィール情報
+      ================================ -->
+      <aside class="animate-bounce-in">
+
+        <!-- キャラクターアイコン -->
+        <div
+          class="w-36 h-36 mx-auto md:mx-0 rounded-full mb-6 flex items-center justify-center text-[#faf8f5] font-display text-5xl shadow-sm"
+          style={`background-color: ${chara.data.color || '#b8cfe0'}`}
+        >
+          {chara.data.nameEn.charAt(0).toUpperCase()}
+        </div>
+
+        <!-- 名前 -->
+        <h1 class="font-display text-2xl font-light text-[#3d3a36] mb-1 text-center md:text-left">
+          {chara.data.name}
+        </h1>
+        <p class="text-sm text-[#8a8278] font-light tracking-wider text-center md:text-left mb-6">
+          {chara.data.nameEn}
+        </p>
+
+        <!-- プロフィール表 -->
+        <div class="bg-[#f3efe8] rounded-2xl p-5 space-y-3">
+          <h2 class="text-xs text-[#8a8278] tracking-widest mb-4 font-light">PROFILE</h2>
+
+          {chara.data.age && (
+            <div class="flex gap-3">
+              <dt class="text-xs text-[#8a8278] font-light w-12 flex-none pt-0.5">年齢</dt>
+              <dd class="text-sm text-[#3d3a36] font-light">{chara.data.age}歳</dd>
+            </div>
+          )}
+
+          {chara.data.tag && (
+            <div class="flex gap-3">
+              <dt class="text-xs text-[#8a8278] font-light w-12 flex-none pt-0.5">性格</dt>
+              <dd class="text-sm text-[#3d3a36] font-light leading-relaxed">{chara.data.tag}</dd>
+            </div>
+          )}
+
+          {chara.data.works && chara.data.works.length > 0 && (
+            <div class="flex gap-3">
+              <dt class="text-xs text-[#8a8278] font-light w-12 flex-none pt-0.5">登場</dt>
+              <dd class="text-sm text-[#3d3a36] font-light">
+                {chara.data.works.join('、')}
+              </dd>
+            </div>
+          )}
+        </div>
+
+        <!-- タグ -->
+        {chara.data.tag && (
+          <div class="flex flex-wrap gap-2 mt-4">
+            {chara.data.tag.split('・').map(t => (
+              <span class="badge">{t.trim()}</span>
+            ))}
+          </div>
+        )}
+
+      </aside>
+
+      <!-- ===============================
+           右カラム：説明文・登場作品・YouTube
+      ================================ -->
+      <div class="animate-fade-up delay-200">
+
+        <!-- キャラクター説明文（Markdownから変換） -->
+        <div class="prose-custom mb-12">
+          <Content />
+        </div>
+
+        <!-- 登場作品へのリンク -->
+        {uniqueSeries.length > 0 && (
+          <section class="mb-10">
+            <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-4 pb-2 border-b border-[#e8e0d4]">
+              登場作品
+            </h2>
+            <div class="flex flex-col gap-3">
+              {uniqueSeries.map(novel => (
+                <a
+                  href={`/novels/${novel.slug}`}
+                  class="card flex items-center gap-4 group no-underline py-3 px-4"
+                >
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-light text-[#3d3a36] group-hover:text-[#6090b0] transition-colors">
+                      {novel.data.series || novel.data.title}
+                    </p>
+                    <p class="text-xs text-[#8a8278] font-light mt-0.5">第{novel.data.chapter}話〜</p>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#b8cfe0] group-hover:text-[#6090b0] transition-colors flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+                  </svg>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <!-- イメージソング（YouTube埋め込み） -->
+        {chara.data.youtubeUrl && (
+          <section>
+            <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-4 pb-2 border-b border-[#e8e0d4]">
+              イメージソング
+            </h2>
+            <div class="rounded-2xl overflow-hidden aspect-video">
+              <iframe
+                src={`https://www.youtube-nocookie.com/embed/${new URL(chara.data.youtubeUrl).searchParams.get('v') || chara.data.youtubeUrl.split('v=')[1]}`}
+                title="イメージソング"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+                class="w-full h-full"
+                loading="lazy"
+              ></iframe>
+            </div>
+          </section>
+        )}
+
+      </div>
+    </div>
+
+    <!-- キャラクター一覧に戻る -->
+    <div class="mt-16 text-center">
+      <a href="/characters" class="btn-ghost">
+        ← キャラクター一覧に戻る
+      </a>
+    </div>
+
+  </div>
+
+</BaseLayout>

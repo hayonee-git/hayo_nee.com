@@ -1,0 +1,201 @@
+---
+// src/pages/about.astro
+// Aboutページです。
+// 作者紹介・SNSリンク・FAQ・問い合わせ先を表示します。
+
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="About"
+  description="作者についてとサイトの情報ページです。"
+>
+
+  <div class="container-main section">
+
+    <!-- ページヘッダー -->
+    <div class="mb-16 animate-fade-up">
+      <p class="text-xs text-[#8a8278] tracking-widest mb-2">— about —</p>
+      <h1 class="font-display text-3xl font-light text-[#3d3a36] tracking-wide">
+        About
+      </h1>
+    </div>
+
+    <div class="max-w-[640px]">
+
+      <!-- ===============================
+           作者紹介
+      ================================ -->
+      <section class="mb-16 animate-bounce-in">
+
+        <div class="flex items-start gap-6">
+          <!-- 作者アイコン（プレースホルダー） -->
+          <div class="flex-none w-16 h-16 md:w-20 md:h-20 rounded-full bg-[#dce8f0] flex items-center justify-center text-[#6090b0] font-display text-2xl">
+            h
+          </div>
+
+          <div>
+            <!-- 作者名 -->
+            <h2 class="font-display text-xl font-light text-[#3d3a36] mb-1">hayo_nee</h2>
+            <p class="text-xs text-[#8a8278] font-light tracking-wider mb-4">作者 / creator</p>
+
+            <!-- 自己紹介文 -->
+            <p class="text-sm text-[#6b6460] font-light leading-loose">
+              海と星と夜の話が好きな創作者です。
+              登場人物たちに夢中になって、どんどん世界が広がっていくのが楽しくて書いています。
+              よかったら、しばらくこの世界に遊びに来てください。
+            </p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ===============================
+           SNSリンク
+      ================================ -->
+      <section class="mb-16 animate-fade-up delay-100">
+        <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-6 pb-2 border-b border-[#e8e0d4]">
+          SNS / Links
+        </h2>
+
+        <div class="flex flex-col gap-3">
+
+          <!-- X (Twitter) -->
+          <a
+            href="https://x.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card flex items-center gap-4 no-underline group py-3 px-4"
+          >
+            <div class="flex-none w-10 h-10 rounded-full bg-[#f3efe8] flex items-center justify-center text-[#3d3a36] group-hover:bg-[#dce8f0] group-hover:text-[#6090b0] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-light text-[#3d3a36] group-hover:text-[#6090b0] transition-colors">X (Twitter)</p>
+              <p class="text-xs text-[#8a8278] font-light">@hayo_nee</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#b8cfe0] group-hover:text-[#6090b0] transition-colors ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+          <!-- Pixiv -->
+          <a
+            href="https://www.pixiv.net/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="card flex items-center gap-4 no-underline group py-3 px-4"
+          >
+            <div class="flex-none w-10 h-10 rounded-full bg-[#f3efe8] flex items-center justify-center text-[#3d3a36] group-hover:bg-[#dce8f0] group-hover:text-[#6090b0] transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.935 0A4.924 4.924 0 0 0 0 4.935v14.13A4.924 4.924 0 0 0 4.935 24H24V4.935A4.924 4.924 0 0 0 19.065 0zm7.81 4.547c2.181 0 4.058.676 5.399 1.847a6.118 6.118 0 0 1 2.116 4.66c.005 1.854-.56 3.36-1.677 4.439-1.135 1.093-2.61 1.645-4.38 1.645-.97 0-1.817-.318-2.34-.542v4.028H9.384V5.079a12.88 12.88 0 0 1 3.361-.532zm.11 2.184c-.926 0-1.741.141-2.34.327v5.66c.428.208 1.134.42 2.022.42 1.857 0 3.278-1.088 3.278-3.248 0-1.976-1.25-3.159-2.96-3.159z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-sm font-light text-[#3d3a36] group-hover:text-[#6090b0] transition-colors">Pixiv</p>
+              <p class="text-xs text-[#8a8278] font-light">pixiv.net/users/hayo_nee</p>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#b8cfe0] group-hover:text-[#6090b0] transition-colors ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
+          </a>
+
+        </div>
+      </section>
+
+      <!-- ===============================
+           お問い合わせ
+      ================================ -->
+      <section class="mb-16 animate-fade-up delay-200">
+        <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-6 pb-2 border-b border-[#e8e0d4]">
+          お問い合わせ / Contact
+        </h2>
+
+        <p class="text-sm text-[#6b6460] font-light leading-loose mb-6">
+          ご感想・ご質問などはGoogleフォームからお気軽にどうぞ。
+          すべてのメッセージを拝読しています。
+        </p>
+
+        <a
+          href="https://docs.google.com/forms/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn-primary inline-flex"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          お問い合わせフォームへ
+        </a>
+      </section>
+
+      <!-- ===============================
+           FAQ
+      ================================ -->
+      <section class="animate-fade-up delay-300">
+        <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-6 pb-2 border-b border-[#e8e0d4]">
+          よくある質問 / FAQ
+        </h2>
+
+        <!-- FAQ アイテム（Alpine.jsでアコーディオン） -->
+        <div class="flex flex-col gap-3" x-data>
+
+          {[
+            {
+              q: "二次創作はできますか？",
+              a: "非営利・成人向けコンテンツ以外であれば、ファンアートや二次創作を歓迎しています。作成したらぜひSNSで教えてください！"
+            },
+            {
+              q: "キャラクターの設定を詳しく知りたいです",
+              a: "キャラクターページに基本的な情報を掲載しています。より詳しい設定はSNSや将来的に増やしていく予定です。"
+            },
+            {
+              q: "小説の更新頻度はどのくらいですか？",
+              a: "不定期更新です。Xをフォローしていただくと更新情報をお知らせできます。"
+            },
+            {
+              q: "このサイトはどのように作られていますか？",
+              a: "Astro + Tailwind CSS を使って制作しています。コンテンツはMarkdownで管理し、GitHub Pagesでホスティングしています。"
+            },
+          ].map((item, i) => (
+            <div
+              class="border border-[#e8e0d4] rounded-2xl overflow-hidden"
+              x-data={`{ open: ${i === 0} }`}
+            >
+              <!-- 質問（クリックで開閉） -->
+              <button
+                class="w-full flex items-center justify-between gap-4 px-5 py-4 text-left text-sm font-light text-[#3d3a36] hover:text-[#6090b0] transition-colors"
+                @click="open = !open"
+              >
+                <span>{item.q}</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="w-4 h-4 flex-none text-[#8a8278] transition-transform duration-200"
+                  :class="open ? 'rotate-180' : ''"
+                  fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                >
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </button>
+              <!-- 回答 -->
+              <div
+                x-show="open"
+                x-collapse
+                class="px-5 pb-4"
+              >
+                <p class="text-sm text-[#6b6460] font-light leading-loose">
+                  {item.a}
+                </p>
+              </div>
+            </div>
+          ))}
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+</BaseLayout>

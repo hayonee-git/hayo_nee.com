@@ -1,0 +1,168 @@
+---
+// src/layouts/BaseLayout.astro
+// 全ページで共通して使用するレイアウトコンポーネントです。
+// ヘッダー・フッター・ドロワーナビゲーションが含まれます。
+
+// ページタイトルと説明文をpropsとして受け取ります
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "自作キャラクターと小説の紹介サイト" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content={description} />
+
+  <!-- ファビコン -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  <!-- サイトタイトル（ページ名 + サイト名） -->
+  <title>{title} | hayo_nee</title>
+
+  <!-- グローバルCSS -->
+  <link rel="stylesheet" href="/src/styles/global.css" />
+</head>
+
+<body
+  x-data="{ drawerOpen: false }"
+  class="min-h-screen"
+>
+
+  <!-- ===============================
+       ヘッダー
+       サイト名とドロワー開閉ボタンを表示します
+  ================================ -->
+  <header class="sticky top-0 z-30 bg-[#faf8f5]/90 backdrop-blur-sm border-b border-[#e8e0d4]">
+    <div class="container-main flex items-center justify-between py-4">
+
+      <!-- サイトロゴ・名前 -->
+      <a href="/" class="font-display text-lg tracking-wider text-[#3d3a36] no-underline hover:opacity-70 transition-opacity">
+        hayo_nee
+      </a>
+
+      <!-- デスクトップ用ナビゲーション（md以上で表示） -->
+      <nav class="hidden md:flex items-center gap-6 text-sm font-light text-[#6b6460]">
+        <a href="/characters" class="hover:text-[#6090b0] transition-colors">キャラクター</a>
+        <a href="/novels" class="hover:text-[#6090b0] transition-colors">小説</a>
+        <a href="/about" class="hover:text-[#6090b0] transition-colors">About</a>
+      </nav>
+
+      <!-- モバイル用ドロワー開閉ボタン（md未満で表示） -->
+      <button
+        class="md:hidden p-2 text-[#6b6460] hover:text-[#3d3a36] transition-colors"
+        @click="drawerOpen = true"
+        aria-label="メニューを開く"
+      >
+        <!-- ハンバーガーアイコン -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+    </div>
+  </header>
+
+  <!-- ===============================
+       ドロワーナビゲーション（モバイル用）
+       Alpine.jsで開閉を制御しています
+  ================================ -->
+
+  <!-- オーバーレイ（クリックで閉じる） -->
+  <div
+    class="drawer-overlay"
+    x-show="drawerOpen"
+    x-transition:enter="transition ease-out duration-200"
+    x-transition:enter-start="opacity-0"
+    x-transition:enter-end="opacity-100"
+    x-transition:leave="transition ease-in duration-150"
+    x-transition:leave-start="opacity-100"
+    x-transition:leave-end="opacity-0"
+    @click="drawerOpen = false"
+    style="display: none;"
+  ></div>
+
+  <!-- ドロワーパネル -->
+  <div
+    class="drawer-panel"
+    x-show="drawerOpen"
+    x-transition:enter="transition ease-out duration-300"
+    x-transition:enter-start="opacity-0 translate-x-full"
+    x-transition:enter-end="opacity-100 translate-x-0"
+    x-transition:leave="transition ease-in duration-200"
+    x-transition:leave-start="opacity-100 translate-x-0"
+    x-transition:leave-end="opacity-0 translate-x-full"
+    style="display: none;"
+  >
+    <!-- ドロワー内のコンテンツ -->
+    <div class="flex flex-col h-full">
+
+      <!-- 閉じるボタン -->
+      <div class="flex justify-end mb-8">
+        <button
+          @click="drawerOpen = false"
+          class="p-2 text-[#8a8278] hover:text-[#3d3a36] transition-colors"
+          aria-label="メニューを閉じる"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- ナビゲーションリンク -->
+      <nav class="flex flex-col gap-1">
+        <a href="/" class="drawer-link py-3 px-2 text-[#3d3a36] font-light border-b border-[#e8e0d4] hover:text-[#6090b0] transition-colors" @click="drawerOpen = false">
+          <span class="text-[#8a8278] text-xs mr-2">01</span>トップ
+        </a>
+        <a href="/characters" class="drawer-link py-3 px-2 text-[#3d3a36] font-light border-b border-[#e8e0d4] hover:text-[#6090b0] transition-colors" @click="drawerOpen = false">
+          <span class="text-[#8a8278] text-xs mr-2">02</span>キャラクター
+        </a>
+        <a href="/novels" class="drawer-link py-3 px-2 text-[#3d3a36] font-light border-b border-[#e8e0d4] hover:text-[#6090b0] transition-colors" @click="drawerOpen = false">
+          <span class="text-[#8a8278] text-xs mr-2">03</span>小説
+        </a>
+        <a href="/about" class="drawer-link py-3 px-2 text-[#3d3a36] font-light hover:text-[#6090b0] transition-colors" @click="drawerOpen = false">
+          <span class="text-[#8a8278] text-xs mr-2">04</span>About
+        </a>
+      </nav>
+
+      <!-- フッター部分 -->
+      <div class="mt-auto pt-8 text-xs text-[#8a8278]">
+        <p>© 2024 hayo_nee</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ===============================
+       メインコンテンツ
+       各ページのコンテンツがここに入ります
+  ================================ -->
+  <main>
+    <slot />
+  </main>
+
+  <!-- ===============================
+       フッター
+  ================================ -->
+  <footer class="border-t border-[#e8e0d4] mt-20 py-10">
+    <div class="container-main">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-[#8a8278] font-light">
+        <p class="font-display tracking-wider">hayo_nee</p>
+        <nav class="flex gap-6">
+          <a href="/characters" class="hover:text-[#6090b0] transition-colors">キャラクター</a>
+          <a href="/novels" class="hover:text-[#6090b0] transition-colors">小説</a>
+          <a href="/about" class="hover:text-[#6090b0] transition-colors">About</a>
+        </nav>
+        <p class="text-xs">© 2024 hayo_nee. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

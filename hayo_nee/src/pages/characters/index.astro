@@ -1,0 +1,91 @@
+---
+// src/pages/characters/index.astro
+// キャラクター一覧ページです。
+// すべてのキャラクターをカード形式で表示します。
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// Content Collectionsからキャラクターデータを取得します
+const characters = await getCollection('characters');
+---
+
+<BaseLayout
+  title="キャラクター一覧"
+  description="登場キャラクターの一覧ページです。"
+>
+
+  <div class="container-main section">
+
+    <!-- ページヘッダー -->
+    <div class="mb-12 animate-fade-up">
+      <p class="text-xs text-[#8a8278] tracking-widest mb-2">— characters —</p>
+      <h1 class="font-display text-3xl font-light text-[#3d3a36] tracking-wide">
+        キャラクター一覧
+      </h1>
+      <p class="text-sm text-[#8a8278] font-light mt-3">
+        {characters.length}人のキャラクターが登録されています
+      </p>
+    </div>
+
+    <!-- キャラクターカードグリッド -->
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6" role="list">
+      {characters.map((chara, i) => (
+        <article
+          class="animate-bounce-in"
+          style={`animation-delay: ${i * 100}ms`}
+          role="listitem"
+        >
+          <a
+            href={`/characters/${chara.slug}`}
+            class="card block text-center group no-underline"
+          >
+
+            <!-- キャラクターアイコン（プレースホルダー） -->
+            <div
+              class="w-20 h-20 md:w-24 md:h-24 mx-auto rounded-full mb-4 flex items-center justify-center text-[#faf8f5] font-display text-3xl transition-transform duration-300 group-hover:scale-105"
+              style={`background-color: ${chara.data.color || '#b8cfe0'}`}
+              aria-hidden="true"
+            >
+              {chara.data.nameEn.charAt(0).toUpperCase()}
+            </div>
+
+            <!-- キャラクター名（日本語） -->
+            <h2 class="font-display text-base font-light text-[#3d3a36] mb-1 group-hover:text-[#6090b0] transition-colors">
+              {chara.data.name}
+            </h2>
+
+            <!-- キャラクター名（アルファベット） -->
+            <p class="text-xs text-[#8a8278] font-light tracking-wider mb-3">
+              {chara.data.nameEn}
+            </p>
+
+            <!-- タグ -->
+            {chara.data.tag && (
+              <p class="text-[11px] text-[#6090b0] font-light leading-relaxed">
+                {chara.data.tag}
+              </p>
+            )}
+
+            <!-- 年齢 -->
+            {chara.data.age && (
+              <p class="text-[10px] text-[#8a8278] font-light mt-2">
+                {chara.data.age}歳
+              </p>
+            )}
+
+          </a>
+        </article>
+      ))}
+    </div>
+
+    <!-- キャラクターが0人の場合のメッセージ -->
+    {characters.length === 0 && (
+      <div class="text-center py-20 text-[#8a8278] font-light">
+        <p>まだキャラクターが登録されていません。</p>
+      </div>
+    )}
+
+  </div>
+
+</BaseLayout>

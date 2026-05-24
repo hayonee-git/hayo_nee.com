@@ -1,0 +1,224 @@
+---
+// src/pages/novels/[slug].astro
+// 小説個別詳細ページです。
+// 本文（Markdown）・前後のナビゲーション・登場キャラクターへのリンクを表示します。
+
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+// -----------------------------------------------
+// getStaticPaths: すべての小説ページを静的生成します
+// -----------------------------------------------
+export async function getStaticPaths() {
+  const novels = await getCollection('novels');
+
+  // 公開日順にソートします
+  const sorted = novels.sort(
+    (a, b) => a.data.publishedAt.getTime() - b.data.publishedAt.getTime()
+  );
+
+  // 各小説ページに「前の話」「次の話」のデータを渡します
+  return sorted.map((novel, index) => ({
+    params: { slug: novel.slug },
+    props: {
+      novel,
+      prevNovel: index > 0 ? sorted[index - 1] : null,
+      nextNovel: index < sorted.length - 1 ? sorted[index + 1] : null,
+    },
+  }));
+}
+
+const { novel, prevNovel, nextNovel } = Astro.props;
+
+// Markdownの本文をHTMLに変換します
+const { Content } = await novel.render();
+
+// 登場キャラクターのデータを取得します
+const allChars = await getCollection('characters');
+const appearedChars = allChars.filter(
+  c => novel.data.characters?.includes(c.slug)
+);
+
+// 日付のフォーマット関数（例: 2024年6月1日）
+function formatDate(date: Date) {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric', month: 'long', day: 'numeric'
+  });
+}
+---
+
+<BaseLayout
+  title={`${novel.data.series || novel.data.title} 第${novel.data.chapter}話`}
+  description={novel.data.summary}
+>
+
+  <div class="container-main section">
+
+    <!-- パンくずリスト -->
+    <nav class="text-xs text-[#8a8278] font-light mb-10 animate-fade-up" aria-label="パンくずリスト">
+      <a href="/" class="hover:text-[#6090b0] transition-colors">トップ</a>
+      <span class="mx-2">›</span>
+      <a href="/novels" class="hover:text-[#6090b0] transition-colors">小説</a>
+      <span class="mx-2">›</span>
+      <span class="text-[#3d3a36]">{novel.data.series || novel.data.title}</span>
+    </nav>
+
+    <!-- ===============================
+         記事ヘッダー
+    ================================ -->
+    <header class="mb-12 animate-bounce-in">
+
+      <!-- シリーズ名 -->
+      {novel.data.series && (
+        <p class="text-xs text-[#6090b0] tracking-widest mb-2 font-light">
+          {novel.data.series}
+        </p>
+      )}
+
+      <!-- タイトル・章番号 -->
+      <h1 class="font-display text-2xl md:text-3xl font-light text-[#3d3a36] mb-2">
+        {novel.data.title}
+        <span class="text-[#8a8278] text-lg ml-2 font-light">第{novel.data.chapter}話</span>
+      </h1>
+
+      <!-- あらすじ -->
+      <p class="text-sm text-[#8a8278] font-light leading-relaxed max-w-reading mb-6">
+        {novel.data.summary}
+      </p>
+
+      <!-- メタ情報 -->
+      <div class="flex flex-wrap gap-4 text-xs text-[#8a8278] font-light">
+        <span>
+          公開: {formatDate(novel.data.publishedAt)}
+        </span>
+        {novel.data.updatedAt && (
+          <span>
+            更新: {formatDate(novel.data.updatedAt)}
+          </span>
+        )}
+      </div>
+
+      <!-- タグ -->
+      {novel.data.tags && novel.data.tags.length > 0 && (
+        <div class="flex flex-wrap gap-2 mt-4">
+          {novel.data.tags.map(tag => (
+            <span class="badge">{tag}</span>
+          ))}
+        </div>
+      )}
+
+    </header>
+
+    <!-- 区切り線 -->
+    <hr class="mb-12" />
+
+    <!-- ===============================
+         小説本文（Markdownから変換）
+    ================================ -->
+    <div
+      class="prose-custom max-w-reading mx-auto mb-16 animate-fade-up delay-200"
+      id="novel-content"
+    >
+      <Content />
+    </div>
+
+    <!-- 区切り線 -->
+    <hr class="mb-12 max-w-reading mx-auto" />
+
+    <!-- ===============================
+         前後の話へのナビゲーション
+    ================================ -->
+    <nav
+      class="flex justify-between items-center gap-4 mb-16 max-w-reading mx-auto animate-fade-up delay-300"
+      aria-label="前後の話へのナビゲーション"
+    >
+
+      <!-- 前の話 -->
+      <div class="flex-1">
+        {prevNovel ? (
+          <a
+            href={`/novels/${prevNovel.slug}`}
+            class="group flex items-center gap-2 text-sm text-[#8a8278] hover:text-[#6090b0] transition-colors font-light no-underline"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <span class="min-w-0">
+              <span class="text-xs block text-[#8a8278] mb-0.5">前の話</span>
+              <span class="font-light truncate block">第{prevNovel.data.chapter}話</span>
+            </span>
+          </a>
+        ) : (
+          <span class="text-xs text-[#e8e0d4]">最初の話です</span>
+        )}
+      </div>
+
+      <!-- 一覧へ戻る -->
+      <a
+        href="/novels"
+        class="flex-none text-xs text-[#8a8278] hover:text-[#6090b0] transition-colors font-light no-underline"
+      >
+        一覧
+      </a>
+
+      <!-- 次の話 -->
+      <div class="flex-1 flex justify-end">
+        {nextNovel ? (
+          <a
+            href={`/novels/${nextNovel.slug}`}
+            class="group flex items-center gap-2 text-sm text-[#8a8278] hover:text-[#6090b0] transition-colors font-light no-underline text-right"
+          >
+            <span class="min-w-0">
+              <span class="text-xs block text-[#8a8278] mb-0.5">次の話</span>
+              <span class="font-light truncate block">第{nextNovel.data.chapter}話</span>
+            </span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-none" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        ) : (
+          <span class="text-xs text-[#e8e0d4]">最新話です</span>
+        )}
+      </div>
+
+    </nav>
+
+    <!-- ===============================
+         登場キャラクターへのリンクカード
+    ================================ -->
+    {appearedChars.length > 0 && (
+      <section class="max-w-reading mx-auto animate-fade-up delay-400">
+        <h2 class="font-display text-base font-light tracking-wider text-[#3d3a36] mb-5 pb-2 border-b border-[#e8e0d4]">
+          登場キャラクター
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {appearedChars.map(chara => (
+            <a
+              href={`/characters/${chara.slug}`}
+              class="card flex items-center gap-3 no-underline group py-3 px-3"
+            >
+              <!-- キャラクターアイコン -->
+              <div
+                class="w-10 h-10 rounded-full flex-none flex items-center justify-center text-[#faf8f5] font-display text-base"
+                style={`background-color: ${chara.data.color || '#b8cfe0'}`}
+              >
+                {chara.data.nameEn.charAt(0).toUpperCase()}
+              </div>
+              <!-- キャラクター名 -->
+              <div class="min-w-0">
+                <p class="text-xs font-light text-[#3d3a36] group-hover:text-[#6090b0] transition-colors truncate">
+                  {chara.data.name}
+                </p>
+                <p class="text-[10px] text-[#8a8278] font-light truncate">
+                  {chara.data.nameEn}
+                </p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+  </div>
+
+</BaseLayout>

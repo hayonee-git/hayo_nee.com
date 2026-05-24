@@ -1,0 +1,88 @@
+# .github/workflows/deploy.yml
+# GitHub ActionsでAstroサイトをGitHub Pagesにデプロイするワークフローです。
+# mainブランチへのpushをトリガーに、自動でビルド＆デプロイを行います。
+
+name: Deploy to GitHub Pages
+
+on:
+  # mainブランチへのpush時に実行します
+  push:
+    branches:
+      - main
+  # GitHubのActions画面から手動実行もできるようにします
+  workflow_dispatch:
+
+# GitHub Pagesへのデプロイに必要な権限設定
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同時に複数のデプロイが走らないようにします
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # -----------------------------------------------
+  # Step 1: ビルドジョブ
+  # Node.jsをセットアップしてAstroをビルドします
+  # -----------------------------------------------
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+      # リポジトリをチェックアウトします
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Node.jsをセットアップします（バージョン20を使用）
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      # GitHub Pagesの設定を構成します
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v4
+
+      # npmパッケージをインストールします
+      - name: Install dependencies
+        run: npm ci
+
+      # Astroをビルドします
+      # --site オプションでサイトURLを指定します
+      - name: Build with Astro
+        run: npm run build
+        env:
+          # GitHub PagesのサイトURLを環境変数として渡します
+          SITE: ${{ steps.pages.outputs.origin }}
+
+      # ビルド成果物（distフォルダ）をアーティファクトとしてアップロードします
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Astroのデフォルトビルド出力先は dist/ です
+          path: ./dist
+
+  # -----------------------------------------------
+  # Step 2: デプロイジョブ
+  # ビルドされたファイルをGitHub Pagesにデプロイします
+  # -----------------------------------------------
+  deploy:
+    name: Deploy
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    # ビルドジョブが完了してからデプロイを実行します
+    needs: build
+    steps:
+
+      # GitHub Pagesにデプロイします
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
