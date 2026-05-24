@@ -1,0 +1,33 @@
+image: node:18
+
+stages:
+  - build
+  - pages
+
+cache:
+  paths:
+    - hayo_nee/node_modules/
+
+variables:
+  PACKAGE_DIR: "hayo_nee"
+
+install_build:
+  stage: build
+  script:
+    - cd "$PACKAGE_DIR"
+    - npm ci
+    - npm run build
+  artifacts:
+    paths:
+      - "$PACKAGE_DIR/dist"
+    expire_in: 1 hour
+
+pages:
+  stage: pages
+  script:
+    - mv "$PACKAGE_DIR/dist" public
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
