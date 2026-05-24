@@ -20,6 +20,12 @@ jobs:
     steps:
       - name: Checkout your repository using git
         uses: actions/checkout@v6
+      - name: Install dependencies (explicit)
+        run: |
+          cd hayo_nee
+          npm ci
+          # make sure local astro binary is executable
+          chmod +x ./node_modules/.bin/astro || true
       - name: Install, build, and upload your site
         uses: withastro/action@v6
         with:
