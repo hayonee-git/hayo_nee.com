@@ -10,7 +10,7 @@ export default defineConfig({
   // 公開URLに合わせて設定します
   site: 'https://hayo_nee.github.io',
   // リポジトリ名がそのままパスになる場合は base を設定します
-  // base: '/hayo_nee.com', // 必要に応じてコメントを外してください
+  base: '/hayo_nee.com', // 必要に応じてコメントを外してください
 
   // 使用するインテグレーション（プラグイン）の一覧
   integrations: [
