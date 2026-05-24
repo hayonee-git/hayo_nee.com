@@ -6,11 +6,10 @@ import tailwind from '@astrojs/tailwind';
 import alpinejs from '@astrojs/alpinejs';
 
 export default defineConfig({
-  // GitHub Pagesのサイトルート設定
-  // 公開URLに合わせて設定します
-  site: 'https://hayo_nee.github.io',
+  // GitHub Pagesのサイトルート設定（ユーザー名とリポジトリ名を正しく指定）
+  site: 'https://hayonee-git.github.io',
   // リポジトリ名がそのままパスになる場合は base を設定します
-  base: '/hayo_nee.com', // 必要に応じてコメントを外してください
+  base: '/hayo_nee.com/',
 
   // 使用するインテグレーション（プラグイン）の一覧
   integrations: [

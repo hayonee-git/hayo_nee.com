@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Not found</title>
+    <meta name="robots" content="noindex">
+    <script>
+      // GitHub Pages のプロジェクトサイトでクライアント側ルーティングを有効にするためのフォールバック。
+      // index.html を取得してその内容をページに書き込み、履歴はリクエストされたパスを保持します。
+      (function () {
+        var path = location.pathname + location.search + location.hash;
+        var indexPath = '/hayo_nee.com/index.html';
+        fetch(indexPath).then(function (r) {
+          return r.text();
+        }).then(function (html) {
+          document.open();
+          document.write(html);
+          // history を差し替えて元のパスを保持
+          history.replaceState({}, '', path);
+        }).catch(function () {
+          // フェッチに失敗したらルートにリダイレクト
+          location.replace('/hayo_nee.com/');
+        });
+      })();
+    </script>
+  </head>
+  <body>Redirecting…</body>
+</html>
